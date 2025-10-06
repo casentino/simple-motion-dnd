@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
+  "extends": "@simple-motion-dnd/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },
