@@ -1,5 +1,5 @@
 {
-  "name": "@repo/ui",
+  "name": "@simple-motion-dnd/grid",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -11,8 +11,8 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@simple-motion-dnd/eslint-config": "*",
+    "@simple-motion-dnd/typescript-config": "*",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
@@ -20,6 +20,7 @@
     "typescript": "5.9.2"
   },
   "dependencies": {
+    "motion": "^12.23.22",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   }
