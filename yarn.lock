@@ -440,7 +440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@simple-motion-dnd/eslint-config@npm:*, @simple-motion-dnd/eslint-config@workspace:^, @simple-motion-dnd/eslint-config@workspace:packages/eslint-config":
+"@simple-motion-dnd/eslint-config@npm:*, @simple-motion-dnd/eslint-config@workspace:packages/eslint-config":
   version: 0.0.0-use.local
   resolution: "@simple-motion-dnd/eslint-config@workspace:packages/eslint-config"
   dependencies:
@@ -462,7 +462,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@simple-motion-dnd/grid@workspace:packages/simple-motion-dnd-grid"
   dependencies:
-    "@simple-motion-dnd/eslint-config": "workspace:^"
+    "@simple-motion-dnd/eslint-config": "npm:*"
     "@simple-motion-dnd/typescript-config": "npm:*"
     "@types/node": "npm:^22.15.3"
     "@types/react": "npm:19.1.0"
