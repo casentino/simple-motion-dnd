@@ -1,4 +1,3 @@
-
- export interface MotionDnDValue {  
+export interface MotionDnDValue {
   id: string | number;
 }
