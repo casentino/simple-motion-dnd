@@ -4,11 +4,12 @@ import { useMotionAsComponent } from "../hooks/useMotionAsComponent";
 import { MotionDnDProvider } from "../context/MotionDnDProvider";
 import { MotionDnDValue } from "./type";
 
-
-interface MotionDnDGroupProps<V extends MotionDnDValue> extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, "values"> {
+interface MotionDnDGroupProps<V extends MotionDnDValue>
+  extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, "values"> {
   as?: keyof HTMLElementTagNameMap;
   values: V[];
   onSorted?: (items: V[]) => void;
+  layoutScroll?: boolean;
   cols: number;
   gap: number;
   rowGap: number;
@@ -20,6 +21,7 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
   as = "ul",
   values,
   onSorted,
+  layoutScroll = true,
   cols,
   gap,
   rowGap,
@@ -28,7 +30,7 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
 }: PropsWithChildren<MotionDnDGroupProps<V>>) {
   const Group = useMotionAsComponent(() => motion[as]);
   const container = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll({
+  const { scrollY, scrollX } = useScroll({
     container,
   });
   const updateSort = (dragItem: number | string, target: number | string) => {
@@ -39,10 +41,10 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
   return (
     <Group
       {...props}
-      layoutScroll
+      layoutScroll={layoutScroll}
       ref={container}
       style={{
-        overflowY: "scroll",
+        overflow: "scroll",
       }}
     >
       <div
@@ -54,7 +56,7 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
           columnGap: `${columnGap}px`,
         }}
       >
-        <MotionDnDProvider scrollY={scrollY} updateSort={updateSort}>
+        <MotionDnDProvider containerScrollY={scrollY} containerScrollX={scrollX} updateSort={updateSort}>
           {children}
         </MotionDnDProvider>
       </div>
