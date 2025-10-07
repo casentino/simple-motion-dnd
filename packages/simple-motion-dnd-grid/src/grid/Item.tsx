@@ -1,23 +1,26 @@
-import { PropsWithChildren, useRef } from "react";
-import { MotionDnDValue } from "./type";
+"use client";
+
+import { PropsWithChildren, useMemo, useRef } from "react";
+
 import { HTMLMotionProps, motion, useMotionValue } from "motion/react";
 import { useMotionAsComponent } from "../hooks/useMotionAsComponent";
 import { useMotionDnD } from "../context/MotionDnDProvider";
 
-interface MotionDndItemProps<T extends MotionDnDValue> extends HTMLMotionProps<keyof HTMLElementTagNameMap> {
-  value: T;
+interface MotionDndItemProps extends HTMLMotionProps<keyof HTMLElementTagNameMap> {
+  itemId: string | number;
   as?: keyof HTMLElementTagNameMap;
 }
 const DATA_ATTRIBUTE_ITEM_ID = "data-simple-dnd-item-id";
-export function MotionDnDItem<T extends MotionDnDValue>({
-  value,
+export function MotionDnDItem({
+  itemId,
   as = "li",
   children,
   onDrag,
   onDragStart,
   onDragEnd,
   ...props
-}: PropsWithChildren<MotionDndItemProps<T>>) {
+}: PropsWithChildren<MotionDndItemProps>) {
+  const id = useMemo(() => (typeof itemId === "number" ? itemId.toString() : itemId), [itemId]);
   const startDragScrollY = useRef(0);
   const startDragScrollX = useRef(0);
   const y = useMotionValue(0);
@@ -33,16 +36,13 @@ export function MotionDnDItem<T extends MotionDnDValue>({
       .elementFromPoint(x - window.scrollX, y - window.scrollY)
       ?.closest(`[${DATA_ATTRIBUTE_ITEM_ID}]`)
       ?.getAttribute(DATA_ATTRIBUTE_ITEM_ID);
-    if (!overlabElementId) {
+    if (!overlabElementId || overlabElementId === id) {
       return;
     }
-    if (value.id === overlabElementId) {
-      return overlabElementId;
-    }
-    return;
+    return overlabElementId;
   };
   return (
-    <div data-simple-dnd-item-id={value.id}>
+    <div data-simple-dnd-item-id={id}>
       <Item
         {...props}
         drag
@@ -53,7 +53,6 @@ export function MotionDnDItem<T extends MotionDnDValue>({
           pointerEvents: isDragging.current ? "none" : undefined,
           background: "transparent",
           touchAction: "none",
-          cursor: "grab",
           y,
           x,
         }}
@@ -69,9 +68,10 @@ export function MotionDnDItem<T extends MotionDnDValue>({
         }}
         onDrag={(event, panInfo) => {
           y.set(y.get() + offsetY.get());
+
           const overlabElementId = checkOverlab(panInfo.point.x, panInfo.point.y);
           if (overlabElementId) {
-            updateSort(value.id, overlabElementId);
+            updateSort(id, overlabElementId);
           }
           if (onDrag) {
             onDrag(event, panInfo);

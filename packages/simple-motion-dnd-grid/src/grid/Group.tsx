@@ -1,7 +1,10 @@
+"use client";
+
 import { HTMLMotionProps, motion, useScroll } from "motion/react";
 import { useRef, type PropsWithChildren } from "react";
 import { useMotionAsComponent } from "../hooks/useMotionAsComponent";
 import { MotionDnDProvider } from "../context/MotionDnDProvider";
+import { sortItem } from "../utils/array";
 import { MotionDnDValue } from "./type";
 
 interface MotionDnDGroupProps<V extends MotionDnDValue>
@@ -12,8 +15,6 @@ interface MotionDnDGroupProps<V extends MotionDnDValue>
   layoutScroll?: boolean;
   cols: number;
   gap: number;
-  rowGap: number;
-  columnGap: number;
 }
 
 export function MotionDnDGroup<V extends MotionDnDValue>({
@@ -24,8 +25,6 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
   layoutScroll = true,
   cols,
   gap,
-  rowGap,
-  columnGap,
   ...props
 }: PropsWithChildren<MotionDnDGroupProps<V>>) {
   const Group = useMotionAsComponent(() => motion[as]);
@@ -33,9 +32,10 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
   const { scrollY, scrollX } = useScroll({
     container,
   });
-  const updateSort = (dragItem: number | string, target: number | string) => {
+  const updateSort = (dragItem: string, target: string) => {
+    const sortedList = sortItem(values, dragItem, target);
     if (onSorted) {
-      onSorted([...values]);
+      onSorted(sortedList);
     }
   };
   return (
@@ -52,8 +52,6 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gap: `${gap}px`,
-          rowGap: `${rowGap}px`,
-          columnGap: `${columnGap}px`,
         }}
       >
         <MotionDnDProvider containerScrollY={scrollY} containerScrollX={scrollX} updateSort={updateSort}>
