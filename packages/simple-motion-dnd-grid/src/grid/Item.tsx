@@ -1,8 +1,8 @@
 "use client";
 
-import { PropsWithChildren, useMemo, useRef } from "react";
+import { type PropsWithChildren, useMemo, useState } from "react";
 
-import { HTMLMotionProps, motion, useMotionValue } from "motion/react";
+import { type HTMLMotionProps, motion } from "motion/react";
 import { useMotionAsComponent } from "../hooks/useMotionAsComponent";
 import { useMotionDnD } from "../context/MotionDnDProvider";
 
@@ -21,16 +21,11 @@ export function MotionDnDItem({
   ...props
 }: PropsWithChildren<MotionDndItemProps>) {
   const id = useMemo(() => (typeof itemId === "number" ? itemId.toString() : itemId), [itemId]);
-  const startDragScrollY = useRef(0);
-  const startDragScrollX = useRef(0);
-  const y = useMotionValue(0);
-  const x = useMotionValue(0);
-  const offsetX = useMotionValue(0);
-  const offsetY = useMotionValue(0);
-  const { updateSort, containerScrollY, containerScrollX } = useMotionDnD();
+
+  const { updateSort } = useMotionDnD();
 
   const Item = useMotionAsComponent(() => motion[as]);
-  const isDragging = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
   const checkOverlab = (x: number, y: number) => {
     const overlabElementId = document
       .elementFromPoint(x - window.scrollX, y - window.scrollY)
@@ -42,33 +37,26 @@ export function MotionDnDItem({
     return overlabElementId;
   };
   return (
-    <div data-simple-dnd-item-id={id}>
+    <div data-simple-dnd-item-id={id} style={{ position: "relative", zIndex: isDragging ? 12 : 10 }}>
       <Item
         {...props}
         drag
         dragSnapToOrigin
+        layout="position"
         style={{
           position: "relative",
           userSelect: "none",
-          pointerEvents: isDragging.current ? "none" : undefined,
+          pointerEvents: isDragging ? "none" : undefined,
           background: "transparent",
           touchAction: "none",
-          y,
-          x,
         }}
         onDragStart={(e, panInfo) => {
+          setIsDragging(true);
           if (onDragStart) {
             onDragStart(e, panInfo);
           }
-          startDragScrollY.current = containerScrollY.get();
-          startDragScrollX.current = containerScrollX.get();
-          offsetX.set(0);
-          offsetY.set(0);
-          isDragging.current = true;
         }}
         onDrag={(event, panInfo) => {
-          y.set(y.get() + offsetY.get());
-
           const overlabElementId = checkOverlab(panInfo.point.x, panInfo.point.y);
           if (overlabElementId) {
             updateSort(id, overlabElementId);
@@ -78,7 +66,7 @@ export function MotionDnDItem({
           }
         }}
         onDragEnd={(e, panInfo) => {
-          isDragging.current = false;
+          setIsDragging(false);
           if (onDragEnd) {
             onDragEnd(e, panInfo);
           }
