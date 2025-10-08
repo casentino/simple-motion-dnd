@@ -29,11 +29,10 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
 }: PropsWithChildren<MotionDnDGroupProps<V>>) {
   const Group = useMotionAsComponent(() => motion[as]);
   const container = useRef<HTMLDivElement>(null);
-  const { scrollY, scrollX } = useScroll({
-    container,
-  });
+  let list = [...values];
   const updateSort = (dragItem: string, target: string) => {
-    const sortedList = sortItem(values, dragItem, target);
+    const sortedList = sortItem(list, dragItem, target);
+    list = sortedList;
     if (onSorted) {
       onSorted(sortedList);
     }
@@ -45,6 +44,7 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
       ref={container}
       style={{
         overflow: "scroll",
+        position: "relative",
       }}
     >
       <div
@@ -54,9 +54,7 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
           gap: `${gap}px`,
         }}
       >
-        <MotionDnDProvider containerScrollY={scrollY} containerScrollX={scrollX} updateSort={updateSort}>
-          {children}
-        </MotionDnDProvider>
+        <MotionDnDProvider updateSort={updateSort}>{children}</MotionDnDProvider>
       </div>
     </Group>
   );
