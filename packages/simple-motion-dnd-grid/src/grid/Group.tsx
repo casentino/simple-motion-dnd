@@ -1,14 +1,16 @@
-"use client";
+'use client';
 
-import { HTMLMotionProps, motion, useScroll } from "motion/react";
-import { useRef, type PropsWithChildren } from "react";
-import { useMotionAsComponent } from "../hooks/useMotionAsComponent";
-import { MotionDnDProvider } from "../context/MotionDnDProvider";
-import { sortItem } from "../utils/array";
-import { MotionDnDValue } from "./type";
+import { HTMLMotionProps, motion } from 'motion/react';
+import { type PropsWithChildren } from 'react';
+import { useMotionAsComponent } from '../hooks/useMotionAsComponent';
+import { MotionDnDProvider } from '../context/MotionDnDProvider';
+import { sortItem } from '../utils/array';
+import { MotionDnDValue } from './type';
+import Grid from '../components/grid/Grid';
+import useContainerScroll from '../hooks/useContainerScroll';
 
 interface MotionDnDGroupProps<V extends MotionDnDValue>
-  extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, "values"> {
+  extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, 'values'> {
   as?: keyof HTMLElementTagNameMap;
   values: V[];
   onSorted?: (items: V[]) => void;
@@ -19,16 +21,17 @@ interface MotionDnDGroupProps<V extends MotionDnDValue>
 
 export function MotionDnDGroup<V extends MotionDnDValue>({
   children,
-  as = "ul",
+  as = 'ul',
   values,
   onSorted,
-  layoutScroll = true,
+  layoutScroll,
   cols,
   gap,
   ...props
 }: PropsWithChildren<MotionDnDGroupProps<V>>) {
   const Group = useMotionAsComponent(() => motion[as]);
-  const container = useRef<HTMLDivElement>(null);
+
+  const { container, scrollY, onPan } = useContainerScroll();
   let list = [...values];
   const updateSort = (dragItem: string, target: string) => {
     const sortedList = sortItem(list, dragItem, target);
@@ -38,24 +41,12 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
     }
   };
   return (
-    <Group
-      {...props}
-      layoutScroll={layoutScroll}
-      ref={container}
-      style={{
-        overflow: "scroll",
-        position: "relative",
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gap: `${gap}px`,
-        }}
-      >
-        <MotionDnDProvider updateSort={updateSort}>{children}</MotionDnDProvider>
-      </div>
+    <Group {...props} ref={container} layoutScroll={layoutScroll} onPan={onPan}>
+      <Grid cols={cols} gap={gap}>
+        <MotionDnDProvider updateSort={updateSort} containerScrollY={scrollY}>
+          {children}
+        </MotionDnDProvider>
+      </Grid>
     </Group>
   );
 }
