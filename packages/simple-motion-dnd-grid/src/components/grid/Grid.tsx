@@ -10,7 +10,7 @@ export default function Grid({ children, cols, gap }: PropsWithChildren<GridProp
       style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
-        gridGap: `${gap}px`,
+        gap: `${gap}px`,
       }}>
       {children}
     </div>
