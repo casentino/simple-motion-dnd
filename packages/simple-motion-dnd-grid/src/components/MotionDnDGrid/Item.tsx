@@ -3,9 +3,9 @@
 import { type PropsWithChildren, useMemo, useState } from 'react';
 
 import { type HTMLMotionProps, motion } from 'motion/react';
-import { useMotionAsComponent } from '../hooks/useMotionAsComponent';
-import { useMotionDnD } from '../context/MotionDnDProvider';
-import useOffsetScroll from '../hooks/useOffsetScroll';
+import { useMotionAsComponent } from '../../hooks/useMotionAsComponent';
+import { useMotionDnD } from '../../context/MotionDnDProvider';
+import useOffsetScroll from '../../hooks/useOffsetScroll';
 
 interface MotionDndItemProps extends HTMLMotionProps<keyof HTMLElementTagNameMap> {
   itemId: string | number;

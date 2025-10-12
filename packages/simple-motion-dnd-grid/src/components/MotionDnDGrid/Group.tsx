@@ -2,12 +2,12 @@
 
 import { HTMLMotionProps, motion } from 'motion/react';
 import { type PropsWithChildren } from 'react';
-import { useMotionAsComponent } from '../hooks/useMotionAsComponent';
-import { MotionDnDProvider } from '../context/MotionDnDProvider';
-import { sortItem } from '../utils/array';
+import { useMotionAsComponent } from '../../hooks/useMotionAsComponent';
+import { MotionDnDProvider } from '../../context/MotionDnDProvider';
+import { sortItem } from '../../utils/array';
 import { MotionDnDValue } from './type';
-import Grid from '../components/grid/Grid';
-import useContainerScroll from '../hooks/useContainerScroll';
+import Grid from '../grid/Grid';
+import useContainerScroll from '../../hooks/useContainerScroll';
 
 interface MotionDnDGroupProps<V extends MotionDnDValue>
   extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, 'values'> {
