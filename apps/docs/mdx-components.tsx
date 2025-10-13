@@ -4,7 +4,7 @@ import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs'; //
 const docsComponents = getDocsMDXComponents();
 
 // Merge components
-export function useMDXComponents(components) {
+export function useMDXComponents(components?: any) {
   return {
     ...docsComponents,
     ...components,
