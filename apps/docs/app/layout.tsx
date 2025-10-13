@@ -1,9 +1,9 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs';
-import { Banner, Head } from 'nextra/components';
+import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import 'nextra-theme-docs/style.css';
 
-const navbar = <Navbar logo={<b>Simple Motion DnD</b>} />;
+const navbar = <Navbar logo={<b>Simple Motion DnD</b>} logoLink="/docs" />;
 const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>;
 export default async function RootLayout({
   children,
@@ -27,7 +27,6 @@ export default async function RootLayout({
           pageMap={await getPageMap()}
           docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
           footer={footer}
-          sidebar={{ defaultMenuCollapseLevel: 1 }}
           search={null}>
           {children}
         </Layout>
