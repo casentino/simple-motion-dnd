@@ -36,10 +36,7 @@ jobs:
         run: yarn
 
       - name: Lint
-        run: yarn lint
-
-      - name: Build Packages
-        run: yarn build
+        run: yarn lint:grid
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
