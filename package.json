@@ -5,11 +5,12 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "lint:grid": "turbo run lint --filter=@simple-motion-dnd/grid",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build --filter=@simple-motion-dnd/grid && changeset publish"
+    "release:grid": "turbo run build --filter=@simple-motion-dnd/grid && changeset publish"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
