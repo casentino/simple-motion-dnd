@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-env:
-  YARN_RC_FILENAME: '.yarnrc.nm.yml'
-  PRISMA_SKIP_POSTINSTALL_GENERATE: 'true'
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 'true'
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
