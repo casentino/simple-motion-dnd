@@ -1,0 +1,232 @@
+# MotionDnDGrid
+
+`MotionDnDGrid` 컴포넌트는 드래그 앤 드롭으로 그리드 아이템들을 재정렬할 수 있는 리스트를 만들 때 사용해요.
+
+```tsx
+const [items, setItems] = useState([
+  { id: 1 },
+  { id: 2 },
+  { id: 3 },
+  { id: 4 },
+  { id: 5 },
+  { id: 6 },
+]);
+
+return (
+  <MotionDnDGrid.Group values={items} onSorted={setItems} cols={3} gap={10}>
+    {items.map((item) => (
+      <MotionDnDGrid.Item key={item.id} itemId={item.id}>
+        {item.id}
+      </MotionDnDGrid.Item>
+    ))}
+  </MotionDnDGrid.Group>
+);
+```
+
+**참고:** `MotionDnDGrid`는 그리드 기반의 드래그 앤 드롭 구현을 위한 라이브러리예요. 기본 `motion` 컴포넌트 위에 구축되어 가볍지만, 다중 행, 컬럼 간 드래그, 스크롤 가능한 컨테이너 내 드래그 같은 고급 기능은 제공하지 않아요. 복잡한 사용 사례에는 DnD Kit 같은 라이브러리를 추천해요.
+
+## 사용법
+
+모든 재정렬 가능한 그리드는 `MotionDnDGrid.Group` 컴포넌트로 감싸야 해요.
+
+```tsx
+import { MotionDnDGrid } from '@simple-motion-dnd/grid';
+
+function Grid() {
+  return <MotionDnDGrid.Group></MotionDnDGrid.Group>;
+}
+```
+
+기본적으로 `<ul>` 요소로 렌더링되지만, `as` prop으로 변경할 수 있어요.
+
+```tsx
+<MotionDnDGrid.Group as="div">
+```
+
+`MotionDnDGrid.Group`에는 `values` prop을 통해 재정렬 가능한 리스트의 값 배열을 전달해야 해요.
+
+또한 `onSorted` 이벤트가 최신 계산된 순서와 함께 발생해요. 아이템을 재정렬하려면 이 함수가 `values` 상태를 업데이트해야 해요.
+
+```tsx
+import { MotionDnDGrid } from '@simple-motion-dnd/grid';
+
+function Grid() {
+  const [items, setItems] = useState([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+
+  return (
+    <MotionDnDGrid.Group
+      values={items}
+      onSorted={setItems}
+      cols={2}
+      gap={10}></MotionDnDGrid.Group>
+  );
+}
+```
+
+각 재정렬 가능한 아이템을 렌더링하려면 `MotionDnDGrid.Item`을 사용하고, `itemId` prop으로 해당하는 값을 전달해요.
+
+```tsx
+import { MotionDnDGrid } from '@simple-motion-dnd/grid';
+
+function Grid() {
+  const [items, setItems] = useState([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+
+  return (
+    <MotionDnDGrid.Group values={items} onSorted={setItems} cols={2} gap={10}>
+      {items.map((item) => (
+        <MotionDnDGrid.Item key={item.id} itemId={item.id}>
+          <div className="bg-blue-500 w-[100px] h-[100px] text-white flex items-center justify-center">
+            {item.id}
+          </div>
+        </MotionDnDGrid.Item>
+      ))}
+    </MotionDnDGrid.Group>
+  );
+}
+```
+
+이제 아이템을 드래그해서 재정렬하면 `onSorted`가 새로운 순서와 함께 호출돼요.
+
+### 레이아웃 애니메이션
+
+`MotionDnDGrid.Item` 컴포넌트는 이미 레이아웃 애니메이션을 수행하도록 구성되어 있어서, 재정렬 가능한 리스트에 새 아이템이 추가되거나 제거되면 주변 아이템들이 자동으로 새로운 위치로 애니메이션돼요.
+
+### 종료 애니메이션
+
+`AnimatePresence`를 사용해서 아이템이 React 트리에 들어오거나 나갈 때 애니메이션을 적용할 수 있어요.
+
+```tsx
+import { AnimatePresence } from 'motion/react';
+import { MotionDnDGrid } from '@simple-motion-dnd/grid';
+
+<AnimatePresence>
+  {items.map((item) => (
+    <MotionDnDGrid.Item
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      key={item.id}
+      itemId={item.id}>
+      <div className="bg-green-500 w-[100px] h-[100px] text-white flex items-center justify-center">
+        {item.id}
+      </div>
+    </MotionDnDGrid.Item>
+  ))}
+</AnimatePresence>;
+```
+
+### 드래그 트리거
+
+기본적으로 `MotionDnDGrid.Item`의 전체 영역이 드래그 가능해요. `useDragControls`를 사용해서 다른 컴포넌트를 드래그 트리거로 정의할 수 있어요.
+
+```tsx
+import { MotionDnDGrid, useDragControls } from '@simple-motion-dnd/grid';
+
+function Item({ itemId }) {
+  const controls = useDragControls();
+
+  return (
+    <MotionDnDGrid.Item itemId={itemId} dragListener={false} dragControls={controls}>
+      <div
+        className="drag-handle cursor-grab"
+        onPointerDown={(e) => controls.start(e)}>
+        드래그 핸들
+      </div>
+      <div className="content">아이템 내용</div>
+    </MotionDnDGrid.Item>
+  );
+}
+```
+
+### 스크롤 가능한 그리드
+
+`MotionDnDGrid.Item` 컴포넌트가 스크롤 가능한 컨테이너 내에 있다면, Framer Motion이 스크롤 오프셋을 올바르게 측정할 수 있도록 해당 컨테이너에 `layoutScroll` prop을 추가해야 해요.
+
+```tsx
+<MotionDnDGrid.Group
+  values={items}
+  onSorted={setItems}
+  cols={3}
+  gap={10}
+  layoutScroll
+  style={{ overflowY: "scroll", height: "400px" }}
+>
+  {items.map((item) => (
+    <MotionDnDGrid.Item key={item.id} itemId={item.id}>
+      <div className="bg-purple-500 w-[100px] h-[100px] text-white flex items-center justify-center">
+        {item.id}
+      </div>
+    </.Item>
+  ))}
+</MotionDnDGrid.Group>
+```
+
+### z-index
+
+`MotionDnDGrid.Item`은 현재 드래그 중인 아이템에 자동으로 `z-index` 스타일을 설정해서 주변 아이템들 위에 나타나도록 해요.
+
+하지만 `z-index`는 `position !== "static"`인 아이템에만 영향을 미쳐요. 이 효과를 활성화하려면 `MotionDnDGrid.Item`의 위치를 `relative` 또는 `absolute`로 설정해야 해요.
+
+## API
+
+### MotionDnDGrid.Group
+
+#### as
+
+**기본값**: `"ul"`
+
+`MotionDnDGrid.Group`이 렌더링할 기본 요소예요.
+
+```tsx
+<MotionDnDGrid.Group as="div"></MotionDnDGrid.Group>
+```
+
+#### values
+
+재정렬될 값들의 배열이에요. 이 리스트의 각 아이템은 각 `MotionDnDGrid.Item`에 전달된 `itemId`와 일치해야 해요.
+
+#### onSorted
+
+아이템이 재정렬된 것으로 감지될 때 호출되는 콜백이에요. 제공된 `newOrder`는 `values` 상태 업데이트 함수에 전달되어야 해요.
+
+```tsx
+const [items, setItems] = useState([
+  { id: 1 },
+  { id: 2 },
+  { id: 3 }
+])
+
+return (
+  <MotionDnDGrid.Group values={items} onSorted={setItems}>
+```
+
+#### cols
+
+그리드의 열 수를 지정해요.
+
+#### gap
+
+그리드 아이템 간의 간격을 지정해요.
+
+#### layoutScroll
+
+스크롤 가능한 컨테이너 내에서 사용할 때 `true`로 설정해요.
+
+### MotionDnDGrid.Item
+
+`MotionDnDGrid.Item` 컴포넌트는 다음을 포함한 모든 `motion` 컴포넌트 props를 받아요:
+
+#### as
+
+**기본값**: `"li"`
+
+`MotionDnDGrid.Item`이 렌더링할 요소예요.
+
+#### itemId
+
+`onSorted`가 호출될 때 새로 정렬된 배열에 전달될 값이에요.
+
+## 관련 주제
+
+- [레이아웃 애니메이션](/layout-animation) - 레이아웃 변경을 부드럽게 애니메이션하고 공유 요소 애니메이션을 만들어요.
+- [AnimatePresence](/animate-presence) - React 컴포넌트가 페이지에서 제거될 때 종료 애니메이션을 추가해요.
