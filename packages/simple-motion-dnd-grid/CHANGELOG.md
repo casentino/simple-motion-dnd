@@ -1,5 +1,11 @@
 # @simple-motion-dnd/grid
 
+## 0.1.2
+
+### Patch Changes
+
+- repository url fix
+
 ## 0.1.1
 
 ### Patch Changes
