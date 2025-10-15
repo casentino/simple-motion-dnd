@@ -12,7 +12,7 @@ import useContainerScroll from '../../hooks/useContainerScroll';
 interface MotionDnDGroupProps<V extends MotionDnDValue>
   extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, 'values'> {
   as?: keyof HTMLElementTagNameMap;
-  values: V[];
+  items: V[];
   onSorted?: (items: V[]) => void;
   layoutScroll?: boolean;
   cols: number;
@@ -22,7 +22,7 @@ interface MotionDnDGroupProps<V extends MotionDnDValue>
 export function MotionDnDGroup<V extends MotionDnDValue>({
   children,
   as = 'ul',
-  values,
+  items,
   onSorted,
   layoutScroll,
   cols,
@@ -32,7 +32,7 @@ export function MotionDnDGroup<V extends MotionDnDValue>({
   const Group = useMotionAsComponent(() => motion[as]);
 
   const { container, scrollY, onPan } = useContainerScroll();
-  let list = [...values];
+  let list = [...items];
   const updateSort = (dragItem: string, target: string) => {
     const sortedList = sortItem(list, dragItem, target);
     list = sortedList;
