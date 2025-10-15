@@ -10,7 +10,7 @@ import Grid from '../grid/Grid';
 import useContainerScroll from '../../hooks/useContainerScroll';
 
 interface MotionDnDGroupProps<V extends MotionDnDValue>
-  extends Omit<HTMLMotionProps<keyof HTMLElementTagNameMap>, 'values'> {
+  extends HTMLMotionProps<keyof HTMLElementTagNameMap> {
   as?: keyof HTMLElementTagNameMap;
   items: V[];
   onSorted?: (items: V[]) => void;
