@@ -1,5 +1,11 @@
 # @simple-motion-dnd/grid
 
+## 1.1.1
+
+### Patch Changes
+
+- README update
+
 ## 1.1.0
 
 ### Minor Changes
